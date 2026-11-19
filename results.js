@@ -4,9 +4,10 @@
     { id: 'q1', title: 'Have you spent any time on dating apps in the last 12 months?', opts: ['Yes, regularly', 'Yes, on and off', 'No'] },
     { id: 'q2', title: 'Would you use an exclusive, membership-based platform for athletes to connect and collaborate?', opts: ['Yes', 'Maybe', 'No'] },
     { id: 'q3', title: 'How important is anonymity? Preventing people at your school from finding your profile, blocking all contacts (including selected Instagram profiles), and screenshot prevention.', scale: true, ends: ['Not important', 'Very important'] },
-    { id: 'q4', title: "How valuable is setting a future location for dates you know you'll be traveling?", scale: true, ends: ['Not valuable', 'Very valuable'] }
+    { id: 'q4', title: "How valuable is setting a future location for dates you know you'll be traveling?", scale: true, ends: ['Not valuable', 'Very valuable'] },
+    { id: 'q5', title: 'School/Sport', text: true }
   ];
-  var HEAD = ['Submitted', 'Gender', 'Dating apps (12 mo)', 'Would use', 'Anonymity (1-5)', 'Future location (1-5)'];
+  var HEAD = ['Submitted', 'Gender', 'Dating apps (12 mo)', 'Would use', 'Anonymity (1-5)', 'Future location (1-5)', 'School/Sport'];
 
   var $ = function (id) { return document.getElementById(id); };
   var data = null;
@@ -64,6 +65,17 @@
     QUESTIONS.forEach(function (q, i) {
       if (!R.length) return;
       var vals = R.map(function (r) { return String(r[q.id] || ''); }).filter(Boolean);
+      if (q.text) {
+        var tv = R.map(function (r) { return String(r[q.id] || '').trim(); }).filter(Boolean);
+        var groups = {};
+        tv.forEach(function (v) { var k = v.toLowerCase().replace(/\s+/g, ' '); groups[k] = groups[k] || { label: v, n: 0 }; groups[k].n++; });
+        var list = Object.keys(groups).map(function (k) { return groups[k]; }).sort(function (a, b) { return b.n - a.n; });
+        var th = '<article class="card glass"><span class="num">0' + (i + 1) + '</span><h3>' + esc(q.title) + '</h3>' +
+          '<p class="meta">' + tv.length + ' of ' + R.length + ' answered</p><div class="split" style="border-top:0;margin-top:8px;padding-top:0">';
+        th += list.length ? list.map(function (g) { return '<div class="srow"><span>' + esc(g.label) + '</span><span><b>' + g.n + '</b></span></div>'; }).join('') : '<p class="meta">No answers yet.</p>';
+        s += th + '</div></article>';
+        return;
+      }
       var opts = q.scale ? ['1', '2', '3', '4', '5'] : q.opts;
       var counts = opts.map(function (o) { return vals.filter(function (v) { return v === o; }).length; });
       var max = Math.max.apply(null, counts.concat(1));
@@ -99,7 +111,7 @@
     $('tab-individual').innerHTML = R.length
       ? '<div class="tablewrap glass"><table><thead><tr>' + HEAD.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr></thead><tbody>' +
         R.map(function (r) {
-          return '<tr><td class="dim">' + esc(fmt(r.t)) + '</td>' + ['q0', 'q1', 'q2', 'q3', 'q4'].map(function (k) {
+          return '<tr><td class="dim">' + esc(fmt(r.t)) + '</td>' + ['q0', 'q1', 'q2', 'q3', 'q4', 'q5'].map(function (k) {
             return r[k] === '' || r[k] == null ? '<td class="dim">–</td>' : '<td>' + esc(r[k]) + '</td>';
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div>'
@@ -153,7 +165,7 @@
       .then(function () { $('refresh').disabled = false; });
   });
   $('csv').addEventListener('click', function () {
-    download('lettered-responses.csv', [HEAD].concat(data.responses.map(function (r) { return [r.t, r.q0, r.q1, r.q2, r.q3, r.q4]; })));
+    download('lettered-responses.csv', [HEAD].concat(data.responses.map(function (r) { return [r.t, r.q0, r.q1, r.q2, r.q3, r.q4, r.q5]; })));
   });
   $('lock').addEventListener('click', function () { store('lettered_key', null); location.reload(); });
 
@@ -162,7 +174,7 @@
 
   function sample() {
     var a = ['Yes, regularly', 'Yes, on and off', 'No'], b = ['Yes', 'Maybe', 'No'], r = [], now = Date.now();
-    for (var i = 0; i < 37; i++) r.push({ t: new Date(now - i * 3.7e6).toISOString(), q0: ['Female','Male','Other'][i % 5 === 0 ? 2 : i % 2], q1: i % 7 ? a[i % 3] : '', q2: b[(i * 5) % 7 > 3 ? 1 : i % 9 === 0 ? 2 : 0], q3: i % 11 ? 3 + (i % 3) : '', q4: 1 + (i * 3) % 5 });
+    for (var i = 0; i < 37; i++) r.push({ t: new Date(now - i * 3.7e6).toISOString(), q0: ['Female','Male','Other'][i % 5 === 0 ? 2 : i % 2], q1: i % 7 ? a[i % 3] : '', q2: b[(i * 5) % 7 > 3 ? 1 : i % 9 === 0 ? 2 : 0], q3: i % 11 ? 3 + (i % 3) : '', q4: 1 + (i * 3) % 5, q5: ['USC Track', 'UCLA Soccer', 'Stanford Swim', ''][i % 4] });
     return { ok: true, responses: r, contacts: [{ d: '2026-11-18', email: 'sample@usc.edu', phone: '' }, { d: '2026-11-18', email: '', phone: '(805) 555-0100' }], sheetUrl: '' };
   }
 })();
