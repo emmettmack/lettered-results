@@ -2,8 +2,8 @@
   var QUESTIONS = [
     { id: 'q1', title: 'Have you spent any time on dating apps in the last 12 months?', opts: ['Yes, regularly', 'Yes, on and off', 'No'] },
     { id: 'q2', title: 'Would you use an exclusive, membership-based platform for athletes to connect and collaborate?', opts: ['Yes', 'Maybe', 'No'] },
-    { id: 'q3', title: 'How important is anonymity?', scale: true, ends: ['Not important', 'Very important'] },
-    { id: 'q4', title: 'How valuable is setting a future location for travel dates?', scale: true, ends: ['Not valuable', 'Very valuable'] }
+    { id: 'q3', title: 'How important is anonymity? Preventing people at your school from finding your profile, blocking all contacts (including selected Instagram profiles), and screenshot prevention.', scale: true, ends: ['Not important', 'Very important'] },
+    { id: 'q4', title: "How valuable is setting a future location for dates you know you'll be traveling?", scale: true, ends: ['Not valuable', 'Very valuable'] }
   ];
   var HEAD = ['Submitted', 'Dating apps (12 mo)', 'Would use', 'Anonymity (1-5)', 'Future location (1-5)'];
 
@@ -57,6 +57,7 @@
     document.querySelector('[data-tab=individual]').innerHTML = 'Individual<span class="n">' + R.length + '</span>';
     document.querySelector('[data-tab=contacts]').innerHTML = 'Early access<span class="n">' + C.length + '</span>';
 
+    // summary
     var s = '';
     if (!R.length) s = '<div class="empty glass"><b>No responses yet.</b>Send the survey link out and they\'ll show up here.</div>';
     QUESTIONS.forEach(function (q, i) {
@@ -83,6 +84,7 @@
       document.querySelectorAll('.dist .f').forEach(function (f) { f.style.transform = 'scaleX(' + f.dataset.w + ')'; });
     }); });
 
+    // individual
     $('tab-individual').innerHTML = R.length
       ? '<div class="tablewrap glass"><table><thead><tr>' + HEAD.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr></thead><tbody>' +
         R.map(function (r) {
@@ -92,6 +94,7 @@
         }).join('') + '</tbody></table></div>'
       : '<div class="empty glass"><b>No responses yet.</b></div>';
 
+    // contacts
     $('tab-contacts').innerHTML = C.length
       ? '<div class="cbar"><button class="pill pill-out pill-sm" id="copyEmails" type="button">Copy all emails</button>' +
         '<button class="pill pill-out pill-sm" id="copyPhones" type="button">Copy all phones</button>' +
@@ -122,6 +125,7 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   }
 
+  // tabs
   document.querySelectorAll('[data-tab]').forEach(function (b) {
     b.addEventListener('click', function () {
       document.querySelectorAll('[data-tab]').forEach(function (x) {
