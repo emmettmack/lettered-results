@@ -1,6 +1,6 @@
 (function () {
   var QUESTIONS = [
-    { id: 'q0', title: 'What is your gender?', opts: ['Female', 'Male', 'Other'] },
+    { id: 'q0', title: 'How do you identify?', opts: ['Female', 'Male', 'Other'] },
     { id: 'q1', title: 'Have you spent any time on dating apps in the last 12 months?', opts: ['Yes, regularly', 'Yes, on and off', 'No'] },
     { id: 'q2', title: 'Would you use an exclusive, membership-based platform for athletes to connect and collaborate?', opts: ['Yes', 'Maybe', 'No'] },
     { id: 'q3', title: 'How important is anonymity? Preventing people at your school from finding your profile, blocking all contacts (including selected Instagram profiles), and screenshot prevention.', scale: true, ends: ['Not important', 'Very important'] },
