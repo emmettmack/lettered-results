@@ -64,3 +64,6 @@ td.dim{color:var(--ink-3)}
   .dist .t{grid-column:1/-1;order:3}
 }
 @media (max-width:480px){.gate-row{flex-direction:column}}
+.split{margin-top:24px;padding-top:18px;border-top:1px solid var(--edge)}
+.srow{display:flex;justify-content:space-between;gap:12px;font-size:15px;color:var(--ink-2);margin-top:10px}
+.srow b{color:#fff;font-weight:600}

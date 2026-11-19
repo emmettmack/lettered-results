@@ -1,11 +1,12 @@
 (function () {
   var QUESTIONS = [
+    { id: 'q0', title: 'What is your gender?', opts: ['Female', 'Male', 'Other'] },
     { id: 'q1', title: 'Have you spent any time on dating apps in the last 12 months?', opts: ['Yes, regularly', 'Yes, on and off', 'No'] },
     { id: 'q2', title: 'Would you use an exclusive, membership-based platform for athletes to connect and collaborate?', opts: ['Yes', 'Maybe', 'No'] },
     { id: 'q3', title: 'How important is anonymity? Preventing people at your school from finding your profile, blocking all contacts (including selected Instagram profiles), and screenshot prevention.', scale: true, ends: ['Not important', 'Very important'] },
     { id: 'q4', title: "How valuable is setting a future location for dates you know you'll be traveling?", scale: true, ends: ['Not valuable', 'Very valuable'] }
   ];
-  var HEAD = ['Submitted', 'Dating apps (12 mo)', 'Would use', 'Anonymity (1-5)', 'Future location (1-5)'];
+  var HEAD = ['Submitted', 'Gender', 'Dating apps (12 mo)', 'Would use', 'Anonymity (1-5)', 'Future location (1-5)'];
 
   var $ = function (id) { return document.getElementById(id); };
   var data = null;
@@ -77,6 +78,16 @@
         h += '<div class="dist"><span class="lab">' + esc(lab) + '</span><div class="t"><div class="f" data-w="' + (counts[k] / max) + '"></div></div>' +
           '<span class="v"><b>' + counts[k] + '</b> · ' + pct(counts[k], vals.length) + '%</span></div>';
       });
+      if (q.id === 'q0') {
+        h += '<div class="split"><p class="meta">Would use the platform, by gender</p>';
+        q.opts.forEach(function (g) {
+          var grp = R.filter(function (r) { return r.q0 === g && r.q2; });
+          var y = grp.filter(function (r) { return r.q2 === 'Yes'; }).length;
+          var mb = grp.filter(function (r) { return r.q2 === 'Maybe'; }).length;
+          h += '<div class="srow"><span>' + g + '</span><span><b>' + (grp.length ? pct(y, grp.length) + '%' : '\u2013') + '</b> yes \u00b7 ' + (grp.length ? pct(mb, grp.length) + '%' : '\u2013') + ' maybe \u00b7 ' + grp.length + ' answered</span></div>';
+        });
+        h += '</div>';
+      }
       s += h + '</article>';
     });
     $('tab-summary').innerHTML = s;
@@ -88,7 +99,7 @@
     $('tab-individual').innerHTML = R.length
       ? '<div class="tablewrap glass"><table><thead><tr>' + HEAD.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr></thead><tbody>' +
         R.map(function (r) {
-          return '<tr><td class="dim">' + esc(fmt(r.t)) + '</td>' + ['q1', 'q2', 'q3', 'q4'].map(function (k) {
+          return '<tr><td class="dim">' + esc(fmt(r.t)) + '</td>' + ['q0', 'q1', 'q2', 'q3', 'q4'].map(function (k) {
             return r[k] === '' || r[k] == null ? '<td class="dim">–</td>' : '<td>' + esc(r[k]) + '</td>';
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div>'
@@ -142,7 +153,7 @@
       .then(function () { $('refresh').disabled = false; });
   });
   $('csv').addEventListener('click', function () {
-    download('lettered-responses.csv', [HEAD].concat(data.responses.map(function (r) { return [r.t, r.q1, r.q2, r.q3, r.q4]; })));
+    download('lettered-responses.csv', [HEAD].concat(data.responses.map(function (r) { return [r.t, r.q0, r.q1, r.q2, r.q3, r.q4]; })));
   });
   $('lock').addEventListener('click', function () { store('lettered_key', null); location.reload(); });
 
@@ -151,7 +162,7 @@
 
   function sample() {
     var a = ['Yes, regularly', 'Yes, on and off', 'No'], b = ['Yes', 'Maybe', 'No'], r = [], now = Date.now();
-    for (var i = 0; i < 37; i++) r.push({ t: new Date(now - i * 3.7e6).toISOString(), q1: i % 7 ? a[i % 3] : '', q2: b[(i * 5) % 7 > 3 ? 1 : i % 9 === 0 ? 2 : 0], q3: i % 11 ? 3 + (i % 3) : '', q4: 1 + (i * 3) % 5 });
+    for (var i = 0; i < 37; i++) r.push({ t: new Date(now - i * 3.7e6).toISOString(), q0: ['Female','Male','Other'][i % 5 === 0 ? 2 : i % 2], q1: i % 7 ? a[i % 3] : '', q2: b[(i * 5) % 7 > 3 ? 1 : i % 9 === 0 ? 2 : 0], q3: i % 11 ? 3 + (i % 3) : '', q4: 1 + (i * 3) % 5 });
     return { ok: true, responses: r, contacts: [{ d: '2026-11-18', email: 'sample@usc.edu', phone: '' }, { d: '2026-11-18', email: '', phone: '(805) 555-0100' }], sheetUrl: '' };
   }
 })();
