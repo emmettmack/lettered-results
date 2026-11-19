@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lettered – Survey results</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="results.css">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="bar">
+  <div class="bar-in">
+    <span class="word">Lettered</span>
+    <div class="bar-r">
+      <span id="who">Results</span>
+      <button class="pill pill-out pill-sm hidden" id="lock" type="button">Lock</button>
+    </div>
+  </div>
+</header>
+
+<main class="page wide" id="main">
+  <!-- gate -->
+  <section id="gate" class="gate glass">
+    <div class="eyebrow">Private</div>
+    <h1 class="h2">Survey results</h1>
+    <p class="lede">For Emmett and Ben only. Enter the passcode.</p>
+    <form id="gateForm" class="gate-row" autocomplete="off">
+      <label class="sr" for="key">Passcode</label>
+      <input class="in" id="key" type="password" placeholder="Passcode" autocomplete="current-password">
+      <button class="pill pill-white" type="submit" id="unlock">Unlock</button>
+    </form>
+    <p class="err" id="gateErr" role="alert"></p>
+  </section>
+
+  <!-- dashboard -->
+  <section id="dash" class="hidden">
+    <div class="dash-head">
+      <div>
+        <div class="eyebrow">Live from the sheet</div>
+        <h1 class="h2">Responses</h1>
+      </div>
+      <div class="actions">
+        <button class="pill pill-out pill-sm" id="refresh" type="button">Refresh</button>
+        <button class="pill pill-out pill-sm" id="csv" type="button">Download CSV</button>
+        <a class="pill pill-white pill-sm hidden" id="sheetLink" target="_blank" rel="noopener">Open sheet</a>
+      </div>
+    </div>
+
+    <div class="stats glass">
+      <div><b id="sTotal">0</b><span>Responses</span></div>
+      <div><b id="sYes">–</b><span>Would use (Yes)</span></div>
+      <div><b id="sContacts">0</b><span>Early access signups</span></div>
+      <div><b id="sLast">–</b><span>Latest response</span></div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="chip" role="tab" aria-selected="true" data-tab="summary">Summary</button>
+      <button class="chip" role="tab" aria-selected="false" data-tab="individual">Individual</button>
+      <button class="chip" role="tab" aria-selected="false" data-tab="contacts">Early access</button>
+    </div>
+
+    <div id="tab-summary" class="grid"></div>
+    <div id="tab-individual" class="hidden"></div>
+    <div id="tab-contacts" class="hidden"></div>
+  </section>
+</main>
+
+<script src="config.js"></script>
+<script src="results.js"></script>
+</body>
+</html>
